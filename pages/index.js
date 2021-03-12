@@ -1,65 +1,159 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect, useState, memo } from "react";
+import styles from "../styles/Home.module.css";
+
+const Photo = memo(({ details }) => {
+  const { user, urls } = details;
+  const router = useRouter();
+
+  function selectImage() {
+    router.push({ pathname: "/img/[url]", query: { url: urls.regular } });
+  }
+
+  return (
+    <div className={styles.imageItem} tabIndex={0} onClick={selectImage}>
+      <img className="img" src={urls.small} />
+      <a
+        className={styles.credit}
+        target="_blank"
+        href={`https://unsplash.com/@${user.username}`}
+      >
+        by {user.name}
+      </a>
+    </div>
+  );
+});
+
+const initialFilter = { perPage: 10, page: 1 };
 
 export default function Home() {
+  const router = useRouter();
+  const { q, page, perPage } = router.query;
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [filters, setFilters] = useState(initialFilter);
+
+  useEffect(() => {
+    if (filters !== initialFilter) {
+      searchQuery();
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    if (!q) {
+      setSearch("");
+      setData(null);
+      setFilters(initialFilter);
+      return;
+    }
+
+    setSearch(q);
+    searchPhotos();
+
+    if (
+      parseInt(page) &&
+      parseInt(perPage) &&
+      (filters.page !== parseInt(page) || filters.perPage !== parseInt(perPage))
+    ) {
+      setFilters({ page: parseInt(page), perPage: parseInt(perPage) });
+    }
+  }, [q, page, perPage]);
+
+  function searchQuery(e) {
+    e?.preventDefault();
+    router.push({
+      query: {
+        q: search,
+        page: q !== search ? 1 : filters.page,
+        perPage: filters.perPage,
+      },
+    });
+  }
+
+  async function searchPhotos() {
+    setLoading(true);
+    let res = await fetch("/api/get-image", {
+      method: "POST",
+      body: JSON.stringify({
+        search: q,
+        filters: { page: parseInt(page), perPage: parseInt(perPage) },
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    res = await res.json();
+    setData(res);
+    setLoading(false);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }
+
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Image Text Creator</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <h1 className={styles.title}>Add text instantly</h1>
+        <p>Select a photo after searching below. Add text and download!</p>
+        <div>
+          <form onSubmit={searchQuery}>
+            <div className={styles.inputContainer}>
+              <input
+                type="text"
+                className={styles.inputField}
+                placeholder="Search image here"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              {search && !loading && (
+                <button
+                  className={styles.crossIcon}
+                  type="button"
+                  onClick={() => setSearch("")}
+                >
+                  ✕
+                </button>
+              )}
+              <button type="submit" className={styles.searchIcon}>
+                {loading ? "..." : "🔍"}
+              </button>
+            </div>
+          </form>
+        </div>
+        {data?.results?.length > 0 && (
+          <p>
+            Showing {data.results?.length} photos out of {data?.total}
+          </p>
+        )}
+        <div className={styles.imageContainer}>
+          {data?.results?.length < 1 && <p>No results</p>}
+          {data?.results?.map((item) => (
+            <Photo key={item.id} details={item}></Photo>
+          ))}
+          {data?.results?.length < data?.total && data?.total_pages > page && (
+            <button
+              onClick={() =>
+                setFilters((prev) => ({ ...prev, page: prev.page + 1 }))
+              }
+            >
+              {loading ? "Getting..." : "Next page..."}
+            </button>
+          )}
         </div>
       </main>
 
       <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
+        Image Text Creator by Dhaval Laiya. Thanks to Unsplash.
       </footer>
     </div>
-  )
+  );
 }
