@@ -3,16 +3,15 @@ import { useRouter } from "next/router";
 import { useEffect, useState, memo } from "react";
 import styles from "../styles/Home.module.css";
 
-const Photo = memo(({ details }) => {
+const Photo = memo(({ details, clickHandler }) => {
   const { user, urls } = details;
-  const router = useRouter();
-
-  function selectImage() {
-    router.push({ pathname: "/img/[url]", query: { url: urls.regular } });
-  }
 
   return (
-    <div className={styles.imageItem} tabIndex={0} onClick={selectImage}>
+    <div
+      className={styles.imageItem}
+      tabIndex={0}
+      onClick={() => clickHandler(details)}
+    >
       <img className="img" src={urls.small} />
       <a
         className={styles.credit}
@@ -34,6 +33,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [filters, setFilters] = useState(initialFilter);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [text, setText] = useState("");
 
   useEffect(() => {
     if (filters !== initialFilter) {
@@ -63,12 +64,30 @@ export default function Home() {
 
   function searchQuery(e) {
     e?.preventDefault();
+    if (!search) {
+      return;
+    }
+
+    setText("");
     router.push({
       query: {
         q: search,
+        text,
         page: q !== search ? 1 : filters.page,
         perPage: filters.perPage,
       },
+    });
+  }
+
+  function processImage(e) {
+    e?.preventDefault();
+    if (!selectedImage) {
+      return;
+    }
+
+    router.push({
+      pathname: "/img/[url]",
+      query: { url: selectedImage?.urls?.regular || "", text },
     });
   }
 
@@ -92,6 +111,28 @@ export default function Home() {
       left: 0,
       behavior: "smooth",
     });
+  }
+
+  let selectedImageView = null;
+  if (selectedImage) {
+    selectedImageView = (
+      <div>
+        <form onSubmit={processImage}>
+          <p>Enter the text to add over image:</p>
+          <input
+            type="text"
+            // className={styles.inputField}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+        </form>
+        <p>Selected image: (click of unselect)</p>
+        <Photo
+          details={selectedImage}
+          clickHandler={() => setSelectedImage(null)}
+        />
+      </div>
+    );
   }
 
   return (
@@ -123,32 +164,45 @@ export default function Home() {
                   ✕
                 </button>
               )}
-              <button type="submit" className={styles.searchIcon}>
-                {loading ? "..." : "🔍"}
+              <button
+                type="submit"
+                disabled={loading}
+                className={styles.searchIcon}
+              >
+                {loading ? "..." : "⇢"}
               </button>
             </div>
           </form>
         </div>
-        {data?.results?.length > 0 && (
-          <p>
-            Showing {data.results?.length} photos out of {data?.total}
-          </p>
+        {selectedImageView || (
+          <>
+            {data?.results?.length > 0 && (
+              <p>
+                Showing {data.results?.length} photos out of {data?.total}
+              </p>
+            )}
+            <div className={styles.imageContainer}>
+              {data?.results?.length < 1 && <p>No results</p>}
+              {data?.results?.map((item) => (
+                <Photo
+                  key={item.id}
+                  details={item}
+                  clickHandler={setSelectedImage}
+                />
+              ))}
+              {data?.results?.length < data?.total &&
+                data?.total_pages > page && (
+                  <button
+                    onClick={() =>
+                      setFilters((prev) => ({ ...prev, page: prev.page + 1 }))
+                    }
+                  >
+                    {loading ? "Getting..." : "Next page..."}
+                  </button>
+                )}
+            </div>
+          </>
         )}
-        <div className={styles.imageContainer}>
-          {data?.results?.length < 1 && <p>No results</p>}
-          {data?.results?.map((item) => (
-            <Photo key={item.id} details={item}></Photo>
-          ))}
-          {data?.results?.length < data?.total && data?.total_pages > page && (
-            <button
-              onClick={() =>
-                setFilters((prev) => ({ ...prev, page: prev.page + 1 }))
-              }
-            >
-              {loading ? "Getting..." : "Next page..."}
-            </button>
-          )}
-        </div>
       </main>
 
       <footer className={styles.footer}>

@@ -140,10 +140,11 @@
 }
 
 .inputField {
-  font-size: 32px;
+  font-size: 22px;
   height: 60px;
+  padding-left: 25px;
   width: 100%;
-  text-align: center;
+  text-align: start;
   border: 0;
   outline: none;
 }
@@ -158,9 +159,10 @@
 
 .searchIcon {
   font-size: 28px;
-  background: transparent;
   border: 0;
   cursor: pointer;
+  padding: 0px 20px;
+  background-color: #eaeaea;
   outline: none;
 }
 
