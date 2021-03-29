@@ -23,14 +23,8 @@
 }
 
 .downloadBtn {
-  padding: 10px;
-  margin: 10px;
-  min-width: 300px;
-  border: 1px solid #c7c7c7;
-  border-radius: 6px;
-  font-weight: bold;
-  position: sticky;
-  z-index: 1;
-  cursor: pointer;
-  top: 10px;
+  margin: 10px !important;
+  position: sticky !important;
+  z-index: 1 !important;
+  top: 10px !important;
 }

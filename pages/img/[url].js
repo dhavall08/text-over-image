@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
 import styles from "../../styles/SelectImage.module.css";
+import { Button, Icon } from "semantic-ui-react";
 
 function SelectedImage() {
   const router = useRouter();
@@ -41,10 +42,18 @@ function SelectedImage() {
   }
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <button className={styles.downloadBtn} onClick={downloadImage}>
-        Download Generated Image
-      </button>
+    <div style={{ textAlign: "center", position: "relative" }}>
+      <Button
+        positive
+        animated="fade"
+        onClick={downloadImage}
+        className={styles.downloadBtn}
+      >
+        <Button.Content visible>Download Generated Image</Button.Content>
+        <Button.Content hidden>
+          <Icon name="download" />
+        </Button.Content>
+      </Button>
       <div ref={finalImage} className={styles.renderImg}>
         <p className={styles.renderText}>{text}</p>
         <canvas ref={imgCanvas} className={styles.image} />
