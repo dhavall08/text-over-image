@@ -16,8 +16,6 @@
 .rightPart {
   padding: 2rem !important;
   width: 100%;
-  height: calc(100vh - 3rem);
-  overflow: auto;
 }
 
 .footer {
@@ -51,4 +49,11 @@
   font-style: italic;
   font-size: 0.8rem;
   color: #555555;
+}
+
+@media (min-width: 768px) {
+  .rightPart {
+    height: calc(100vh - 3rem);
+    overflow: auto;
+  }
 }

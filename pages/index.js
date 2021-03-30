@@ -1,6 +1,7 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect, useState, memo, useRef } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect, useState, memo, useRef } from 'react';
 import {
   Button,
   Card,
@@ -13,8 +14,8 @@ import {
   Input,
   Pagination,
   Segment,
-} from "semantic-ui-react";
-import styles from "../styles/Home.module.css";
+} from 'semantic-ui-react';
+import styles from '../styles/Home.module.css';
 
 const Photo = memo(({ details, clickHandler = () => {} }) => {
   const { user, urls } = details;
@@ -30,21 +31,23 @@ const Photo = memo(({ details, clickHandler = () => {} }) => {
   );
 });
 
+Photo.displayName = 'Photo';
+
 const initialFilter = { perPage: 10, page: 1 };
 
 export default function Home() {
   const router = useRouter();
   const { q, page, perPage } = router.query;
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [filters, setFilters] = useState(initialFilter);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const rightPart = useRef();
 
   function scrollToTop() {
-    rightPart.current?.scrollIntoView({ behavior: "smooth" });
+    rightPart.current?.scrollIntoView({ behavior: 'smooth' });
   }
 
   useEffect(() => {
@@ -60,7 +63,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!q) {
-      setSearch("");
+      setSearch('');
       setData(null);
       setFilters(initialFilter);
       return;
@@ -84,7 +87,7 @@ export default function Home() {
       return;
     }
 
-    setText("");
+    setText('');
     setSelectedImage(null);
 
     router.push({
@@ -104,21 +107,21 @@ export default function Home() {
     }
 
     router.push({
-      pathname: "/img/[url]",
-      query: { url: selectedImage?.urls?.regular || "", text },
+      pathname: '/img/[url]',
+      query: { url: selectedImage?.urls?.regular || '', text },
     });
   }
 
   async function searchPhotos() {
     setLoading(true);
-    let res = await fetch("/api/get-image", {
-      method: "POST",
+    let res = await fetch('/api/get-image', {
+      method: 'POST',
       body: JSON.stringify({
         search: q,
         filters: { page: parseInt(page), perPage: parseInt(perPage) },
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
     res = await res.json();
@@ -127,7 +130,7 @@ export default function Home() {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   }
 
@@ -137,7 +140,6 @@ export default function Home() {
       <>
         <Segment>
           <Button
-            icon
             labelPosition="left"
             content="Back"
             icon="left arrow"
@@ -196,7 +198,7 @@ export default function Home() {
                       fluid
                       disabled={loading}
                       loading={loading}
-                      action={{ icon: "search" }}
+                      action={{ icon: 'search' }}
                       placeholder="Search image here..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
@@ -223,17 +225,15 @@ export default function Home() {
                         <span ref={rightPart} />
                         {data?.results?.length > 0 && (
                           <p>
-                            Showing {(page - 1) * perPage + 1} to{" "}
+                            Showing {(page - 1) * perPage + 1} to{' '}
                             {page * perPage > data.total
                               ? data.total
-                              : page * perPage}{" "}
+                              : page * perPage}{' '}
                             photos out of {data.total}
                           </p>
                         )}
                         <Card.Group itemsPerRow={4} stackable>
-                          {data?.results?.length < 1 ? (
-                            <p>No results</p>
-                          ) : (
+                          {data?.results?.length >= 1 ? (
                             data?.results?.map((item) => (
                               <Photo
                                 key={item.id}
@@ -241,6 +241,8 @@ export default function Home() {
                                 clickHandler={setSelectedImage}
                               />
                             ))
+                          ) : (
+                            <p>{q ? 'No results.' : 'Search something!'}</p>
                           )}
                         </Card.Group>
                       </Segment>
@@ -250,6 +252,8 @@ export default function Home() {
                             activePage={page}
                             boundaryRange={0}
                             ellipsisItem={null}
+                            prevItem={null}
+                            nextItem={null}
                             siblingRange={1}
                             totalPages={data.total_pages}
                             onPageChange={(e, data) => {

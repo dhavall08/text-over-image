@@ -1,22 +1,21 @@
 .renderImg {
   margin: auto;
   position: relative;
-  width: fit-content;
+  display: block;
 }
 
 .image {
   display: block;
-  max-height: max(600px, 60vh);
-  object-fit: contain;
+  width: 100%;
 }
 
 .renderText {
   position: absolute;
-  bottom: 0;
-  padding: 20px 80px;
+  bottom: 3vw;
+  padding: calc(1.8vw + 1vh) calc(1.8vw + 1vh);
   text-align: center;
   background: #ffffff6b;
-  font-size: 28px;
+  font-size: calc(1.8vw + 1vh);
   width: 100%;
   color: black;
   font-weight: bold;
@@ -27,4 +26,5 @@
   position: sticky !important;
   z-index: 1 !important;
   top: 10px !important;
+  text-align: center;
 }
