@@ -17,6 +17,9 @@ import {
 } from 'semantic-ui-react';
 import styles from '../styles/Home.module.css';
 
+import 'emoji-mart/css/emoji-mart.css';
+import { Picker } from 'emoji-mart';
+
 const Photo = memo(({ details, clickHandler = () => {} }) => {
   const { user, urls } = details;
 
@@ -93,7 +96,6 @@ export default function Home() {
     router.push({
       query: {
         q: search,
-        text,
         page: q !== search ? 1 : filters.page,
         perPage: filters.perPage,
       },
@@ -134,6 +136,10 @@ export default function Home() {
     });
   }
 
+  function selectEmoji(emoji) {
+    setText((prev) => `${prev}${emoji.native}`);
+  }
+
   let selectedImageView = null;
   if (selectedImage) {
     selectedImageView = (
@@ -156,6 +162,7 @@ export default function Home() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
+              <Picker onSelect={selectEmoji} showPreview={false} />
             </Form.Field>
             <Form.Field>
               <label>Selected image:</label>

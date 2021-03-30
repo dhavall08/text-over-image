@@ -11,6 +11,7 @@
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
   },
   "dependencies": {
+    "emoji-mart": "^3.0.1",
     "file-saver": "^2.0.5",
     "html2canvas": "^1.0.0-rc.7",
     "next": "10.0.7",
