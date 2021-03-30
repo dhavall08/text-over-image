@@ -44,6 +44,12 @@ function SelectedImage() {
   return (
     <Container>
       <div className={styles.downloadBtn}>
+        <Button
+          labelPosition="left"
+          content="Back"
+          icon="left arrow"
+          onClick={() => router.back()}
+        />
         <Button positive animated="fade" onClick={downloadImage}>
           <Button.Content visible>Download Generated Image</Button.Content>
           <Button.Content hidden>
