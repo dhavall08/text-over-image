@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+Card; /* eslint-disable react-hooks/exhaustive-deps */
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState, memo, useRef } from 'react';
@@ -10,22 +10,27 @@ import {
   Grid,
   Header,
   Icon,
-  Image,
   Input,
   Pagination,
   Segment,
 } from 'semantic-ui-react';
 import styles from '../styles/Home.module.css';
 
-import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
+import EmojiPicker from '../common/EmojiPicker';
 
 const Photo = memo(({ details, clickHandler = () => {} }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
   const { user, urls } = details;
 
   return (
     <Card onClick={() => clickHandler(details)}>
-      <Image wrapped ui={false} src={urls.small} />
+      <div
+        className={`image ${styles.img} ${
+          imageLoaded ? styles.imgVisible : styles.imgHidden
+        }`}
+      >
+        <img src={urls.small} onLoad={() => setImageLoaded(true)} />
+      </div>
       <Card.Content extra>
         <Icon name="user" />
         {user.name}
@@ -86,7 +91,7 @@ export default function Home() {
 
   function searchQuery(e) {
     e?.preventDefault();
-    if (!search) {
+    if (!search || !search.trim()) {
       return;
     }
 
@@ -129,11 +134,7 @@ export default function Home() {
     res = await res.json();
     setData(res);
     setLoading(false);
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
+    scrollToTop();
   }
 
   function selectEmoji(emoji) {
@@ -143,17 +144,18 @@ export default function Home() {
   let selectedImageView = null;
   if (selectedImage) {
     selectedImageView = (
-      <>
-        <Segment>
-          <Button
-            labelPosition="left"
-            content="Back"
-            icon="left arrow"
-            onClick={() => setSelectedImage(null)}
-          />
-        </Segment>
-        <Segment>
-          <Form onSubmit={processImage}>
+      <Form onSubmit={processImage}>
+        <Segment.Group>
+          <Segment>
+            <Button
+              labelPosition="left"
+              content="Back"
+              icon="left arrow"
+              type="button"
+              onClick={() => setSelectedImage(null)}
+            />
+          </Segment>
+          <Segment>
             <Form.Field>
               <label>Enter the text to add over image:</label>
               <textarea
@@ -162,18 +164,24 @@ export default function Home() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
-              <Picker onSelect={selectEmoji} showPreview={false} />
+            </Form.Field>
+            <Form.Field>
+              <EmojiPicker selectEmoji={selectEmoji} />
             </Form.Field>
             <Form.Field>
               <label>Selected image:</label>
-              <Photo details={selectedImage} />
+              <div style={{ maxWidth: '180px' }}>
+                <Photo details={selectedImage} />
+              </div>
             </Form.Field>
-            <Button type="submit" primary>
-              Generate
+          </Segment>
+          <Segment textAlign="right">
+            <Button type="submit" primary size="massive">
+              Generate Image
             </Button>
-          </Form>
-        </Segment>
-      </>
+          </Segment>
+        </Segment.Group>
+      </Form>
     );
   }
 
@@ -225,56 +233,54 @@ export default function Home() {
                 tablet={11}
                 className={styles.rightPart}
               >
-                <Segment.Group>
-                  {selectedImageView || (
-                    <>
-                      <Segment loading={loading} padded="very">
-                        <span ref={rightPart} />
-                        {data?.results?.length > 0 && (
-                          <p>
-                            Showing {(page - 1) * perPage + 1} to{' '}
-                            {page * perPage > data.total
-                              ? data.total
-                              : page * perPage}{' '}
-                            photos out of {data.total}
-                          </p>
-                        )}
-                        <Card.Group itemsPerRow={4} stackable>
-                          {data?.results?.length >= 1 ? (
-                            data?.results?.map((item) => (
-                              <Photo
-                                key={item.id}
-                                details={item}
-                                clickHandler={setSelectedImage}
-                              />
-                            ))
-                          ) : (
-                            <p>{q ? 'No results.' : 'Search something!'}</p>
-                          )}
-                        </Card.Group>
-                      </Segment>
-                      {data?.results?.length < data?.total && (
-                        <Segment textAlign="right">
-                          <Pagination
-                            activePage={page}
-                            boundaryRange={0}
-                            ellipsisItem={null}
-                            prevItem={null}
-                            nextItem={null}
-                            siblingRange={1}
-                            totalPages={data.total_pages}
-                            onPageChange={(e, data) => {
-                              setFilters((prev) => ({
-                                ...prev,
-                                page: data.activePage,
-                              }));
-                            }}
-                          />
-                        </Segment>
+                {selectedImageView || (
+                  <Segment.Group>
+                    <Segment loading={loading} padded="very">
+                      <span ref={rightPart} />
+                      {data?.results?.length > 0 && (
+                        <p>
+                          Showing {(page - 1) * perPage + 1} to{' '}
+                          {page * perPage > data.total
+                            ? data.total
+                            : page * perPage}{' '}
+                          photos out of {data.total}
+                        </p>
                       )}
-                    </>
-                  )}
-                </Segment.Group>
+                      <Card.Group itemsPerRow={4} stackable>
+                        {data?.results?.length >= 1 ? (
+                          data?.results?.map((item) => (
+                            <Photo
+                              key={item.id}
+                              details={item}
+                              clickHandler={setSelectedImage}
+                            />
+                          ))
+                        ) : (
+                          <p>{q ? 'No results.' : 'Search something!'}</p>
+                        )}
+                      </Card.Group>
+                    </Segment>
+                    {data?.results?.length < data?.total && (
+                      <Segment textAlign="right">
+                        <Pagination
+                          activePage={page}
+                          boundaryRange={0}
+                          ellipsisItem={null}
+                          prevItem={null}
+                          nextItem={null}
+                          siblingRange={1}
+                          totalPages={data.total_pages}
+                          onPageChange={(e, data) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              page: data.activePage,
+                            }));
+                          }}
+                        />
+                      </Segment>
+                    )}
+                  </Segment.Group>
+                )}
               </Grid.Column>
             </Grid.Row>
           </Grid>

@@ -33,6 +33,7 @@ function SelectedImage() {
   }, [url]);
 
   function downloadImage() {
+    // to prevent white space, used previous version: 1.0.0-alpha.12 of html2canvas
     finalImage.current &&
       html2canvas(finalImage.current).then(function (canvas) {
         canvas?.toBlob(function (blob) {
@@ -50,7 +51,7 @@ function SelectedImage() {
           icon="left arrow"
           onClick={() => router.back()}
         />
-        <Button positive animated="fade" onClick={downloadImage}>
+        <Button size="huge" positive animated="fade" onClick={downloadImage}>
           <Button.Content visible>Download Generated Image</Button.Content>
           <Button.Content hidden>
             <Icon name="download" />

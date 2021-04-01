@@ -41,8 +41,19 @@
   height: 1em;
 }
 
-.imageContainer img {
-  width: 100%;
+.img {
+  transition: all 1s ease-in;
+  overflow: hidden;
+}
+
+.imgVisible {
+  opacity: 1;
+  max-height: 1000px;
+}
+
+.imgHidden {
+  opacity: 0.5;
+  max-height: 0;
 }
 
 .credit {
