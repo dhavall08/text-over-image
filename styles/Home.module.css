@@ -62,6 +62,14 @@
   color: #555555;
 }
 
+.link {
+  cursor: pointer;
+}
+
+.link:hover, .link:focus {
+  text-decoration: underline;
+}
+
 @media (min-width: 768px) {
   .rightPart {
     height: calc(100vh - 3rem);

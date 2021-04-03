@@ -1,7 +1,7 @@
 Card; /* eslint-disable react-hooks/exhaustive-deps */
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useEffect, useState, memo, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   Button,
   Card,
@@ -9,7 +9,6 @@ import {
   Form,
   Grid,
   Header,
-  Icon,
   Input,
   Pagination,
   Segment,
@@ -17,34 +16,14 @@ import {
 import styles from '../styles/Home.module.css';
 
 import EmojiPicker from '../common/EmojiPicker';
-
-const Photo = memo(({ details, clickHandler = () => {} }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const { user, urls } = details;
-
-  return (
-    <Card onClick={() => clickHandler(details)}>
-      <div
-        className={`image ${styles.img} ${
-          imageLoaded ? styles.imgVisible : styles.imgHidden
-        }`}
-      >
-        <img src={urls.small} onLoad={() => setImageLoaded(true)} />
-      </div>
-      <Card.Content extra>
-        <Icon name="user" />
-        {user.name}
-      </Card.Content>
-    </Card>
-  );
-});
-
-Photo.displayName = 'Photo';
+import Photo from '../common/Photo';
+import { appName, baseTitle } from '../common/utils/helper';
 
 const initialFilter = { perPage: 10, page: 1 };
 
 export default function Home() {
   const router = useRouter();
+  const inputRef = useRef();
   const { q, page, perPage } = router.query;
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -59,8 +38,12 @@ export default function Home() {
   }
 
   useEffect(() => {
-    scrollToTop();
+    q && scrollToTop();
   }, [selectedImage]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     if (filters !== initialFilter) {
@@ -101,7 +84,7 @@ export default function Home() {
     router.push({
       query: {
         q: search,
-        page: q !== search ? 1 : filters.page,
+        page: q === search && !e ? filters.page : 1,
         perPage: filters.perPage,
       },
     });
@@ -159,6 +142,7 @@ export default function Home() {
             <Form.Field>
               <label>Enter the text to add over image:</label>
               <textarea
+                autoFocus
                 placeholder="Your text..."
                 rows={2}
                 value={text}
@@ -188,7 +172,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Image Text Creator</title>
+        <title>{baseTitle}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -211,6 +195,7 @@ export default function Home() {
                   <Form onSubmit={searchQuery}>
                     <Input
                       fluid
+                      ref={inputRef}
                       disabled={loading}
                       loading={loading}
                       action={{ icon: 'search' }}
@@ -288,7 +273,23 @@ export default function Home() {
       </main>
 
       <footer className={styles.footer}>
-        Image Text Creator by Dhaval Laiya. Thanks to Unsplash.
+        {baseTitle} by&nbsp;
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://github.com/dhavall08`}
+        >
+          Dhaval Laiya
+        </a>
+        . Thanks to&nbsp;
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://unsplash.com/?utm_source=${appName}&utm_medium=referral`}
+        >
+          Unsplash
+        </a>
+        .
       </footer>
     </div>
   );

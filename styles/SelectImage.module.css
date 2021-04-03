@@ -14,8 +14,9 @@
   bottom: 3vw;
   padding: calc(1.8vw + 1vh) calc(1.8vw + 1vh);
   text-align: center;
-  background: #ffffff6b;
+  background: #ffffff8c;
   font-size: calc(1.8vw + 1vh);
+  white-space: pre-wrap;
   width: 100%;
   color: black;
   font-weight: bold;
