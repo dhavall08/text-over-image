@@ -8,10 +8,11 @@ export default async (req, res) => {
       accessKey: upsplashKey,
     });
 
-    const { search, filters } = req.body;
+    const { search, page, perPage } = req.query;
     const result = await unsplash.search.getPhotos({
       query: search,
-      ...filters,
+      page,
+      perPage,
     });
     if (result.errors) {
       console.log('error occurred: ', result.errors[0]);

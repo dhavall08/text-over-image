@@ -1,4 +1,3 @@
-Card; /* eslint-disable react-hooks/exhaustive-deps */
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from 'react';
@@ -17,75 +16,54 @@ import styles from '../styles/Home.module.css';
 
 import EmojiPicker from '../common/EmojiPicker';
 import Photo from '../common/Photo';
-import { appName, baseTitle } from '../common/utils/helper';
-
-const initialFilter = { perPage: 10, page: 1 };
+import { appName, baseTitle, PER_PAGE } from '../common/utils/helper';
+import { fetchImages } from '../apis';
+import { useQuery } from 'react-query';
 
 export default function Home() {
   const router = useRouter();
   const inputRef = useRef();
-  const { q, page, perPage } = router.query;
+  const { q, page = 1, perPage = PER_PAGE } = router.query;
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
-  const [filters, setFilters] = useState(initialFilter);
   const [selectedImage, setSelectedImage] = useState(null);
   const [text, setText] = useState('');
+  const { data, isLoading, isFetching } = useQuery(
+    ['images', { q, page, perPage }], // refetch on changes of variable
+    () => fetchImages(q, page, perPage),
+    {
+      enabled: !!q, // to prevent initial call
+      keepPreviousData: true, // update data only when new data arrives
+      onSuccess: () => scrollToTop(),
+    }
+  );
   const rightPart = useRef();
-
-  function scrollToTop() {
-    rightPart.current?.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  useEffect(() => {
-    q && scrollToTop();
-  }, [selectedImage]);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
-    if (filters !== initialFilter) {
-      scrollToTop();
-      searchQuery();
-    }
-  }, [filters]);
+    q && setSearch(q);
+  }, [q]);
 
-  useEffect(() => {
-    if (!q) {
-      setSearch('');
-      setData(null);
-      setFilters(initialFilter);
-      return;
-    }
+  function scrollToTop() {
+    rightPart.current?.scrollIntoView({ behavior: 'smooth' });
+  }
 
-    setSearch(q);
-    searchPhotos();
-
-    if (
-      parseInt(page) &&
-      parseInt(perPage) &&
-      (filters.page !== parseInt(page) || filters.perPage !== parseInt(perPage))
-    ) {
-      setFilters({ page: parseInt(page), perPage: parseInt(perPage) });
-    }
-  }, [q, page, perPage]);
-
-  function searchQuery(e) {
+  function searchQuery(e, newPage = 1) {
     e?.preventDefault();
     if (!search || !search.trim()) {
       return;
     }
 
     setText('');
-    setSelectedImage(null);
+    imageSelectionHandler(null);
 
     router.push({
       query: {
         q: search,
-        page: q === search && !e ? filters.page : 1,
-        perPage: filters.perPage,
+        page: newPage,
+        perPage: isNaN(perPage) ? PER_PAGE : perPage,
       },
     });
   }
@@ -102,26 +80,13 @@ export default function Home() {
     });
   }
 
-  async function searchPhotos() {
-    setLoading(true);
-    let res = await fetch('/api/get-image', {
-      method: 'POST',
-      body: JSON.stringify({
-        search: q,
-        filters: { page: parseInt(page), perPage: parseInt(perPage) },
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    res = await res.json();
-    setData(res);
-    setLoading(false);
-    scrollToTop();
-  }
-
   function selectEmoji(emoji) {
     setText((prev) => `${prev}${emoji.native}`);
+  }
+
+  function imageSelectionHandler(value) {
+    setSelectedImage(value);
+    scrollToTop();
   }
 
   let selectedImageView = null;
@@ -135,7 +100,7 @@ export default function Home() {
               content="Back"
               icon="left arrow"
               type="button"
-              onClick={() => setSelectedImage(null)}
+              onClick={() => imageSelectionHandler(null)}
             />
           </Segment>
           <Segment>
@@ -192,12 +157,12 @@ export default function Home() {
                   subheader="Select a photo after searching below. Add text and download!"
                 />
                 <div>
-                  <Form onSubmit={searchQuery}>
+                  <Form onSubmit={(e) => searchQuery(e, 1)}>
                     <Input
                       fluid
                       ref={inputRef}
-                      disabled={loading}
-                      loading={loading}
+                      // disabled={isLoading || isFetching}
+                      loading={isLoading || isFetching}
                       action={{ icon: 'search' }}
                       placeholder="Search image here..."
                       value={search}
@@ -206,7 +171,7 @@ export default function Home() {
                     {/* <Button
                       floated="right"
                       icon="close"
-                      disabled={loading}
+                      disabled={isLoading}
                       onClick={() => setSearch("")}
                     /> */}
                   </Form>
@@ -220,7 +185,7 @@ export default function Home() {
               >
                 {selectedImageView || (
                   <Segment.Group>
-                    <Segment loading={loading} padded="very">
+                    <Segment loading={isLoading || isFetching} padded="very">
                       <span ref={rightPart} />
                       {data?.results?.length > 0 && (
                         <p>
@@ -237,7 +202,7 @@ export default function Home() {
                             <Photo
                               key={item.id}
                               details={item}
-                              clickHandler={setSelectedImage}
+                              clickHandler={imageSelectionHandler}
                             />
                           ))
                         ) : (
@@ -256,10 +221,11 @@ export default function Home() {
                           siblingRange={1}
                           totalPages={data.total_pages}
                           onPageChange={(e, data) => {
-                            setFilters((prev) => ({
+                            searchQuery(undefined, data.activePage);
+                            /* setFilters((prev) => ({
                               ...prev,
                               page: data.activePage,
-                            }));
+                            })); */
                           }}
                         />
                       </Segment>
