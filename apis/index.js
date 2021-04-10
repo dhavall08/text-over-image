@@ -10,7 +10,7 @@ export const fetchImages = async (q = '', page = 1, perPage = PER_PAGE) => {
   }).toString();
 
   const apiURL = hasAbsoluteURL
-    ? `${process.env.API_URL}/api/get-image?${searchParams}`
+    ? `${process.env.NEXT_PUBLIC_API_URL}/api/get-image?${searchParams}`
     : `/api/get-image?${searchParams}`;
 
   const res = await fetch(apiURL, {
