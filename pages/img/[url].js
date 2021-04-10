@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
-import styles from '../../styles/SelectImage.module.css';
 import { Button, Container, Icon, Loader } from 'semantic-ui-react';
 import Head from 'next/head';
 import { getTitle } from '../../common/utils/helper';
@@ -54,7 +53,7 @@ function SelectedImage() {
       <Head>
         <title>{getTitle('Generated Image')}</title>
       </Head>
-      <div className={styles.downloadBtn}>
+      <div className="download-btn">
         <Button
           labelPosition="left"
           content="Back"
@@ -76,9 +75,9 @@ function SelectedImage() {
         </Button>
       </div>
       {!loaded && <Loader active inline="centered" />}
-      <div ref={finalImage} className={styles.renderImg}>
-        <p className={styles.renderText}>{text}</p>
-        <canvas ref={imgCanvas} className={styles.image} />
+      <div ref={finalImage} className="render-img">
+        <p className="render-text">{text}</p>
+        <canvas ref={imgCanvas} className="canvas-image" />
       </div>
     </Container>
   );

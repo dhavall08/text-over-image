@@ -12,7 +12,7 @@ import {
   Pagination,
   Segment,
 } from 'semantic-ui-react';
-import styles from '../styles/Home.module.css';
+// import '../styles/Home.css';
 
 import EmojiPicker from '../common/EmojiPicker';
 import Photo from '../common/Photo';
@@ -135,110 +135,104 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className="container-app">
       <Head>
         <title>{baseTitle}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <main className="main">
         <Container fluid>
           <Grid>
             <Grid.Row>
-              <Grid.Column
-                computer={4}
-                mobile={16}
-                tablet={5}
-                className={styles.leftPart}
-              >
-                <Header
-                  as="h1"
-                  content="Text over Image"
-                  subheader="Select a photo after searching below. Add text and download!"
-                />
-                <div>
-                  <Form onSubmit={(e) => searchQuery(e, 1)}>
-                    <Input
-                      fluid
-                      ref={inputRef}
-                      // disabled={isLoading || isFetching}
-                      loading={isLoading || isFetching}
-                      action={{ icon: 'search' }}
-                      placeholder="Search image here..."
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                    {/* <Button
+              <Grid.Column computer={4} mobile={16} tablet={5}>
+                <div className="left-part">
+                  <Header
+                    as="h1"
+                    content="Text over Image"
+                    subheader="Select a photo after searching below. Add text and download!"
+                  />
+                  <div>
+                    <Form onSubmit={(e) => searchQuery(e, 1)}>
+                      <Input
+                        fluid
+                        ref={inputRef}
+                        // disabled={isLoading || isFetching}
+                        loading={isLoading || isFetching}
+                        action={{ icon: 'search' }}
+                        placeholder="Search image here..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                      {/* <Button
                       floated="right"
                       icon="close"
                       disabled={isLoading}
                       onClick={() => setSearch("")}
                     /> */}
-                  </Form>
+                    </Form>
+                  </div>
                 </div>
               </Grid.Column>
-              <Grid.Column
-                computer={12}
-                mobile={16}
-                tablet={11}
-                className={styles.rightPart}
-              >
-                {selectedImageView || (
-                  <Segment.Group>
-                    <Segment loading={isLoading || isFetching} padded="very">
-                      <span ref={rightPart} />
-                      {data?.results?.length > 0 && (
-                        <p>
-                          Showing {(page - 1) * perPage + 1} to{' '}
-                          {page * perPage > data.total
-                            ? data.total
-                            : page * perPage}{' '}
-                          photos out of {data.total}
-                        </p>
-                      )}
-                      <Card.Group itemsPerRow={4} stackable>
-                        {data?.results?.length >= 1 ? (
-                          data?.results?.map((item) => (
-                            <Photo
-                              key={item.id}
-                              details={item}
-                              clickHandler={imageSelectionHandler}
-                            />
-                          ))
-                        ) : (
-                          <p>{q ? 'No results.' : 'Search something!'}</p>
+              <Grid.Column computer={12} mobile={16} tablet={11}>
+                <div className="right-part">
+                  {selectedImageView || (
+                    <Segment.Group>
+                      <Segment loading={isLoading || isFetching} padded="very">
+                        <span ref={rightPart} />
+                        {data?.results?.length > 0 && (
+                          <p>
+                            Showing {(page - 1) * perPage + 1} to{' '}
+                            {page * perPage > data.total
+                              ? data.total
+                              : page * perPage}{' '}
+                            photos out of {data.total}
+                          </p>
                         )}
-                      </Card.Group>
-                    </Segment>
-                    {data?.results?.length < data?.total && (
-                      <Segment textAlign="right">
-                        <Pagination
-                          activePage={page}
-                          boundaryRange={0}
-                          ellipsisItem={null}
-                          prevItem={null}
-                          nextItem={null}
-                          siblingRange={1}
-                          totalPages={data.total_pages}
-                          onPageChange={(e, data) => {
-                            searchQuery(undefined, data.activePage);
-                            /* setFilters((prev) => ({
+                        <Card.Group itemsPerRow={4} stackable>
+                          {data?.results?.length >= 1 ? (
+                            data?.results?.map((item) => (
+                              <Photo
+                                key={item.id}
+                                details={item}
+                                clickHandler={imageSelectionHandler}
+                              />
+                            ))
+                          ) : (
+                            <p>{q ? 'No results.' : 'Search something!'}</p>
+                          )}
+                        </Card.Group>
+                      </Segment>
+                      {data?.results?.length < data?.total && (
+                        <Segment textAlign="right">
+                          <Pagination
+                            activePage={page}
+                            boundaryRange={0}
+                            ellipsisItem={null}
+                            prevItem={null}
+                            nextItem={null}
+                            siblingRange={1}
+                            totalPages={data.total_pages}
+                            onPageChange={(e, data) => {
+                              searchQuery(undefined, data.activePage);
+                              /* setFilters((prev) => ({
                               ...prev,
                               page: data.activePage,
                             })); */
-                          }}
-                        />
-                      </Segment>
-                    )}
-                  </Segment.Group>
-                )}
+                            }}
+                          />
+                        </Segment>
+                      )}
+                    </Segment.Group>
+                  )}
+                </div>
               </Grid.Column>
             </Grid.Row>
           </Grid>
         </Container>
       </main>
 
-      <footer className={styles.footer}>
+      <footer className="footer">
         {baseTitle} by&nbsp;
         <a
           target="_blank"

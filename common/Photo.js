@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import { Card, Icon } from 'semantic-ui-react';
-import styles from '../styles/Home.module.css';
+// import '../styles/Home.css';
 import { appName } from './utils/helper';
 
 function Photo({ details, clickHandler = () => {} }) {
@@ -39,9 +39,7 @@ function Photo({ details, clickHandler = () => {} }) {
       }}
     >
       <div
-        className={`image ${styles.img} ${
-          imageLoaded ? styles.imgVisible : styles.imgHidden
-        }`}
+        className={`image img ${imageLoaded ? 'img-visible' : 'img-hidden'}`}
       >
         <img src={urls.small} onLoad={() => setImageLoaded(true)} />
       </div>
@@ -49,7 +47,7 @@ function Photo({ details, clickHandler = () => {} }) {
         <Icon name="user circle" />
         <span
           tabIndex={0}
-          className={styles.link}
+          className="link"
           onClick={(e) => openURL(e, 'Photo')}
         >
           Photo
@@ -57,7 +55,7 @@ function Photo({ details, clickHandler = () => {} }) {
         by{' '}
         <span
           tabIndex={0}
-          className={styles.link}
+          className="link"
           onClick={(e) => openURL(e, 'Author')}
         >
           {user.name}
@@ -65,7 +63,7 @@ function Photo({ details, clickHandler = () => {} }) {
         on{' '}
         <span
           tabIndex={0}
-          className={styles.link}
+          className="link"
           onClick={(e) => openURL(e, 'Unsplash')}
         >
           Unsplash
