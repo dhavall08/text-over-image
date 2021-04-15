@@ -19,6 +19,7 @@ import Photo from '../common/Photo';
 import { appName, baseTitle, PER_PAGE } from '../common/utils/helper';
 import { fetchImages } from '../apis';
 import { useQuery } from 'react-query';
+import quotes from '../constants/inspirations.json';
 
 export default function Home() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [text, setText] = useState('');
+  const [open, setOpen] = useState(false);
   const { data, isLoading, isFetching } = useQuery(
     ['images', { q, page, perPage }], // refetch on changes of variable
     () => fetchImages(q, page, perPage),
@@ -34,6 +36,7 @@ export default function Home() {
       enabled: !!q, // to prevent initial call
       keepPreviousData: true, // update data only when new data arrives
       onSuccess: () => scrollToTop(),
+      refetchOnWindowFocus: false,
     }
   );
   const rightPart = useRef();
@@ -70,7 +73,8 @@ export default function Home() {
 
   function processImage(e) {
     e?.preventDefault();
-    if (!selectedImage) {
+
+    if (!selectedImage || !text.trim()) {
       return;
     }
 
@@ -87,6 +91,13 @@ export default function Home() {
   function imageSelectionHandler(value) {
     setSelectedImage(value);
     scrollToTop();
+  }
+
+  function generateQuote() {
+    const random = Math.floor(Math.random() * quotes.length);
+    const text = quotes[random].text;
+    const author = quotes[random].author;
+    setText(author ? `${text} \n— ${author}` : text);
   }
 
   let selectedImageView = null;
@@ -108,14 +119,35 @@ export default function Home() {
               <label>Enter the text to add over image:</label>
               <textarea
                 autoFocus
+                required
                 placeholder="Your text..."
-                rows={2}
+                rows={4}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
             </Form.Field>
             <Form.Field>
-              <EmojiPicker selectEmoji={selectEmoji} />
+              <Button
+                basic
+                labelPosition="left"
+                color="green"
+                content="Inspirational Quote"
+                icon="quote left"
+                type="button"
+                onClick={generateQuote}
+              />
+              <Button
+                basic
+                labelPosition="left"
+                color="purple"
+                content={open ? 'Close' : 'Add Emoji'}
+                icon={open ? 'close' : 'plus'}
+                type="button"
+                onClick={() => setOpen((prev) => !prev)}
+              />
+            </Form.Field>
+            <Form.Field>
+              <EmojiPicker open={open} selectEmoji={selectEmoji} />
             </Form.Field>
             <Form.Field>
               <label>Selected image:</label>
@@ -215,10 +247,6 @@ export default function Home() {
                             totalPages={data.total_pages}
                             onPageChange={(e, data) => {
                               searchQuery(undefined, data.activePage);
-                              /* setFilters((prev) => ({
-                              ...prev,
-                              page: data.activePage,
-                            })); */
                             }}
                           />
                         </Segment>
