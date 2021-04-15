@@ -131,3 +131,20 @@ a {
   z-index: 1;
   top: 10px;
 }
+
+.sticky-panel {
+  position: sticky;
+  bottom: 0;
+  padding: 15px;
+  backdrop-filter: blur(50px) brightness(2);
+  border-top: 2px solid #a2a2a2;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  margin-top: 10px;
+}
+
+.floating-icon {
+  position: absolute;
+  top: -50px;
+  right: 10px;
+}

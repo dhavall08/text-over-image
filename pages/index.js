@@ -12,7 +12,6 @@ import {
   Pagination,
   Segment,
 } from 'semantic-ui-react';
-// import '../styles/Home.css';
 
 import EmojiPicker from '../common/EmojiPicker';
 import Photo from '../common/Photo';

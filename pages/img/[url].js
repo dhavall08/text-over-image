@@ -1,16 +1,18 @@
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import { Button, Container, Icon, Loader } from 'semantic-ui-react';
 import Head from 'next/head';
 import { getTitle } from '../../common/utils/helper';
+import TextTweaker from '../../common/TextTweaker';
 
 function SelectedImage() {
   const router = useRouter();
   const finalImage = useRef();
   const selectedImage = useRef();
   const imgCanvas = useRef();
+  const [textStyle, setTextStyle] = useState({});
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const { url, text } = router.query;
@@ -48,6 +50,10 @@ function SelectedImage() {
       });
   }
 
+  const changeHandler = useCallback((cssProp, cssValue) => {
+    setTextStyle((prev) => ({ ...prev, [cssProp]: cssValue }));
+  }, []);
+
   return (
     <Container>
       <Head>
@@ -76,8 +82,13 @@ function SelectedImage() {
       </div>
       {!loaded && <Loader active inline="centered" />}
       <div ref={finalImage} className="render-img">
-        <p className="render-text">{text}</p>
+        <p className="render-text" style={textStyle}>
+          {text}
+        </p>
         <canvas ref={imgCanvas} className="canvas-image" />
+      </div>
+      <div className="sticky-panel">
+        <TextTweaker changeHandler={changeHandler} />
       </div>
     </Container>
   );
