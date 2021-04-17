@@ -119,7 +119,7 @@ a {
 @media (min-width: 768px) {
   .right-part {
     padding: 2rem;
-    height: calc(100vh - 3rem);
+    /* height: calc(100vh - 3rem); */
     overflow: auto;
   }
   .left-part {
