@@ -2670,6 +2670,11 @@ react-refresh@0.8.3:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
+react-semantic-ui-range@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/react-semantic-ui-range/-/react-semantic-ui-range-0.7.1.tgz#bc552f889e4243d500d4673dd7966752664935fe"
+  integrity sha512-6AQLuFeARHcIO7yl4Pd0BBIB9sJyeNK1mku7luK6aTXrj9EGaqr1fWS7w4b0+GUP7CvkixmcyYqykxzpKS4Lcw==
+
 react@17.0.1:
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.1.tgz#6e0600416bd57574e3f86d92edba3d9008726127"

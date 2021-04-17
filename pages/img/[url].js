@@ -7,12 +7,18 @@ import Head from 'next/head';
 import { getTitle } from '../../common/utils/helper';
 import TextTweaker from '../../common/TextTweaker';
 
+const initStyle = {
+  fontSize: 'calc(1.8vw + 1vh)',
+  color: '#000000',
+  backgroundColor: '#ffffff8c',
+};
+
 function SelectedImage() {
   const router = useRouter();
   const finalImage = useRef();
   const selectedImage = useRef();
   const imgCanvas = useRef();
-  const [textStyle, setTextStyle] = useState({});
+  const [textStyle, setTextStyle] = useState(initStyle);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const { url, text } = router.query;
@@ -51,6 +57,10 @@ function SelectedImage() {
   }
 
   const changeHandler = useCallback((cssProp, cssValue) => {
+    if (cssProp === 'reset') {
+      setTextStyle(initStyle);
+      return;
+    }
     setTextStyle((prev) => ({ ...prev, [cssProp]: cssValue }));
   }, []);
 
@@ -88,7 +98,7 @@ function SelectedImage() {
         <canvas ref={imgCanvas} className="canvas-image" />
       </div>
       <div className="sticky-panel">
-        <TextTweaker changeHandler={changeHandler} />
+        <TextTweaker changeHandler={changeHandler} values={textStyle} />
       </div>
     </Container>
   );

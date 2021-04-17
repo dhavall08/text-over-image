@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
 import { TwitterPicker } from 'react-color';
-import { Button, Icon, Tab } from 'semantic-ui-react';
+import { Button, Icon, Segment, Tab } from 'semantic-ui-react';
+import { Slider } from 'react-semantic-ui-range';
 
 const sections = {
   tC: { text: 'Text Color', param: 'color' },
   bC: {
-    text: 'Background Color ',
+    text: 'Background Color',
     param: 'backgroundColor',
   },
-  tS: { text: 'Text Size ', param: 'fontSize' },
+  tS: { text: 'Text Size', param: 'fontSize' },
+  reset: 'reset',
 };
 
-function TextTweaker({ changeHandler }) {
+function TextTweaker({ changeHandler, values }) {
   const [open, setOpen] = useState(true);
+
+  const settings = {
+    start: 6,
+    min: 6,
+    max: 48,
+    step: 2,
+    onChange: (value) => {
+      changeHandler(sections.tS.param, value);
+    },
+  };
 
   const panes = [
     {
@@ -41,19 +53,24 @@ function TextTweaker({ changeHandler }) {
         );
       },
     },
-    /* {
+    {
       menuItem: sections.tS.text,
       render() {
         return (
-          <TwitterPicker
-            colors={colors}
-            triangle="hide"
-            width="100%"
-            onChange={(data) => changeHandler(sections.tC.param, data.hex)}
-          />
+          <Segment>
+            <>
+              {isNaN(values[sections.tS.param]) ||
+                `${values[sections.tS.param]}px`}
+              <Slider
+                color="green"
+                settings={settings}
+                value={values[sections.tS.param]}
+              />
+            </>
+          </Segment>
         );
       },
-    }, */
+    },
   ];
   return (
     <div style={{ position: 'relative' }}>
@@ -61,11 +78,20 @@ function TextTweaker({ changeHandler }) {
         <Button
           icon
           circular
-          size="big"
+          size="huge"
+          color="grey"
+          onClick={() => changeHandler(sections.reset)}
+        >
+          <Icon inverted name="refresh" />
+        </Button>
+        <Button
+          icon
+          circular
+          size="large"
           color="green"
           onClick={() => setOpen((prev) => !prev)}
         >
-          <Icon inverted size="big" name={open ? 'angle down' : 'angle up'} />
+          <Icon inverted size="large" name={open ? 'angle down' : 'angle up'} />
         </Button>
       </div>
       <Tab
