@@ -9,6 +9,7 @@ import {
   Grid,
   Header,
   Input,
+  List,
   Pagination,
   Segment,
 } from 'semantic-ui-react';
@@ -50,6 +51,11 @@ export default function Home() {
 
   function scrollToTop() {
     rightPart.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function clearSearch() {
+    setSearch('');
+    inputRef.current?.focus();
   }
 
   function searchQuery(e, newPage = 1) {
@@ -181,28 +187,62 @@ export default function Home() {
                   <Header
                     as="h1"
                     content="Text over Image"
-                    subheader="Select a photo after searching below. Add text and download!"
+                    subheader="by Dhaval Laiya"
                   />
-                  <div>
-                    <Form onSubmit={(e) => searchQuery(e, 1)}>
-                      <Input
-                        fluid
-                        ref={inputRef}
-                        // disabled={isLoading || isFetching}
-                        loading={isLoading || isFetching}
-                        action={{ icon: 'search' }}
-                        placeholder="Search image here..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                      />
-                      {/* <Button
-                      floated="right"
-                      icon="close"
-                      disabled={isLoading}
-                      onClick={() => setSearch("")}
-                    /> */}
-                    </Form>
-                  </div>
+                  <List divided ordered relaxed="very" size="large">
+                    <List.Item>
+                      <List.Content>
+                        <List.Header>Search images:</List.Header>
+                        <List.Description>
+                          <Form
+                            className="search-form"
+                            onSubmit={(e) => searchQuery(e, 1)}
+                          >
+                            <Input
+                              fluid
+                              ref={inputRef}
+                              required
+                              loading={isLoading || isFetching}
+                              action={{
+                                icon: !isLoading && !isFetching && 'search',
+                              }}
+                              placeholder="Search image here..."
+                              value={search}
+                              onChange={(e) => setSearch(e.target.value)}
+                            />
+                            {search !== '' && (
+                              <i
+                                tabIndex={0}
+                                aria-hidden="true"
+                                className="close icon"
+                                onClick={clearSearch}
+                              />
+                            )}
+                          </Form>
+                        </List.Description>
+                      </List.Content>
+                    </List.Item>
+                    <List.Item>
+                      <List.Icon name="mouse pointer" verticalAlign="middle" />
+                      <List.Content>
+                        <List.Description>Select an image.</List.Description>
+                      </List.Content>
+                    </List.Item>
+                    <List.Item>
+                      <List.Icon name="text cursor" verticalAlign="middle" />
+                      <List.Content>
+                        <List.Description>
+                          Write/Generate text with emoji.
+                        </List.Description>
+                      </List.Content>
+                    </List.Item>
+                    <List.Item>
+                      <List.Icon name="download" verticalAlign="middle" />
+                      <List.Content>
+                        <List.Description>Download image!</List.Description>
+                      </List.Content>
+                    </List.Item>
+                  </List>
                 </div>
               </Grid.Column>
               <Grid.Column computer={12} mobile={16} tablet={11}>
@@ -217,7 +257,7 @@ export default function Home() {
                             {page * perPage > data.total
                               ? data.total
                               : page * perPage}{' '}
-                            photos out of {data.total}
+                            images out of {data.total}
                           </p>
                         )}
                         <Card.Group itemsPerRow={4} stackable>

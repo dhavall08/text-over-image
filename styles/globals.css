@@ -31,6 +31,34 @@ a {
   padding-bottom: 2rem;
 }
 
+.left-part h1.header {
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 0.125rem solid;
+}
+
+.left-part .list .content .header {
+  margin-bottom: 0.5rem;
+}
+
+.left-part .search-form {
+  position: relative
+}
+
+.left-part .search-form .close.icon {
+  display: inline-block;
+  position: absolute;
+  right: 3rem;
+  top: 0.825rem;
+  color: #9a9a9a;
+  cursor: pointer;
+  outline: none;
+}
+
+.left-part .search-form .close.icon:focus {
+  color: #555555;
+}
+
 .right-part {
   padding-bottom: 2rem;
   width: 100%;
@@ -38,8 +66,8 @@ a {
 
 .footer {
   width: 100%;
-  height: 40px;
-  border-top: 1px solid #eaeaea;
+  height: 2.5rem;
+  border-top: 0.0625rem solid #eaeaea;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -96,6 +124,7 @@ a {
   }
   .left-part {
     padding: 2rem;
+    padding-right: 0;
   }
 }
 
@@ -138,9 +167,9 @@ a {
   padding: 25px 15px;
   backdrop-filter: blur(50px) brightness(2);
   border-top: 2px solid #a2a2a2;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  margin-top: 30px;
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+  margin-top: 1.875rem;
 }
 
 .floating-icon {

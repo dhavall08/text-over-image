@@ -21,6 +21,7 @@ function SelectedImage() {
   const [textStyle, setTextStyle] = useState(initStyle);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
   const { url, text } = router.query;
 
   useEffect(() => {
@@ -36,10 +37,18 @@ function SelectedImage() {
         canvas.height = image.height;
 
         context.drawImage(image, 0, 0);
+        setError(false);
         setLoaded(true);
       },
       false
     );
+
+    image.addEventListener('error', (e) => {
+      console.log(e);
+      setLoaded(true);
+      setError(true);
+    });
+
     image.src = url;
     selectedImage.current = image;
   }, [url]);
@@ -91,6 +100,12 @@ function SelectedImage() {
         </Button>
       </div>
       {!loaded && <Loader active inline="centered" />}
+      {error && (
+        <p>
+          Oops! Something went wrong while loading image. Try with a different
+          image.
+        </p>
+      )}
       <div ref={finalImage} className="render-img">
         <p className="render-text" style={textStyle}>
           {text}
