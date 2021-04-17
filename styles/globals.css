@@ -135,7 +135,7 @@ a {
 .sticky-panel {
   position: sticky;
   bottom: 0;
-  padding: 15px;
+  padding: 25px 15px;
   backdrop-filter: blur(50px) brightness(2);
   border-top: 2px solid #a2a2a2;
   border-top-left-radius: 20px;
@@ -145,6 +145,6 @@ a {
 
 .floating-icon {
   position: absolute;
-  top: -40px;
+  top: -50px;
   right: 10px;
 }

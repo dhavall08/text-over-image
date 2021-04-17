@@ -67,7 +67,7 @@ function SelectedImage() {
   return (
     <Container>
       <Head>
-        <title>{getTitle('Generated Image')}</title>
+        <title>{getTitle('Generate Image')}</title>
       </Head>
       <div className="download-btn">
         <Button
@@ -84,7 +84,7 @@ function SelectedImage() {
           loading={loading}
           onClick={downloadImage}
         >
-          <Button.Content visible>Download Generated Image</Button.Content>
+          <Button.Content visible>Download Image</Button.Content>
           <Button.Content hidden>
             <Icon name="download" />
           </Button.Content>

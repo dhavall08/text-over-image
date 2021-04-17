@@ -139,7 +139,7 @@ export default function Home() {
                 basic
                 labelPosition="left"
                 color="purple"
-                content={open ? 'Close' : 'Add Emoji'}
+                content={open ? 'Close Emoji' : 'Add Emoji'}
                 icon={open ? 'close' : 'plus'}
                 type="button"
                 onClick={() => setOpen((prev) => !prev)}

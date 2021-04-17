@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TwitterPicker } from 'react-color';
+import { ChromePicker } from 'react-color';
 import { Button, Icon, Segment, Tab } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
+import rgbHex from 'rgb-hex';
 
 const sections = {
   tC: { text: 'Text Color', param: 'color' },
@@ -14,7 +15,7 @@ const sections = {
 };
 
 function TextTweaker({ changeHandler, values }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const settings = {
     start: 6,
@@ -31,11 +32,14 @@ function TextTweaker({ changeHandler, values }) {
       menuItem: sections.tC.text,
       render() {
         return (
-          <TwitterPicker
-            colors={colors}
-            triangle="hide"
-            width="100%"
-            onChange={(data) => changeHandler(sections.tC.param, data.hex)}
+          <ChromePicker
+            color={values[sections.tC.param]}
+            onChange={(c) =>
+              changeHandler(
+                sections.tC.param,
+                `#${rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a)}`
+              )
+            }
           />
         );
       },
@@ -44,11 +48,14 @@ function TextTweaker({ changeHandler, values }) {
       menuItem: sections.bC.text,
       render() {
         return (
-          <TwitterPicker
-            colors={colors}
-            triangle="hide"
-            width="100%"
-            onChange={(data) => changeHandler(sections.bC.param, data.hex)}
+          <ChromePicker
+            color={values[sections.bC.param]}
+            onChange={(c) =>
+              changeHandler(
+                sections.bC.param,
+                `#${rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a)}`
+              )
+            }
           />
         );
       },
@@ -79,7 +86,7 @@ function TextTweaker({ changeHandler, values }) {
           icon
           circular
           size="huge"
-          color="grey"
+          color="green"
           onClick={() => changeHandler(sections.reset)}
         >
           <Icon inverted name="refresh" />
@@ -87,11 +94,11 @@ function TextTweaker({ changeHandler, values }) {
         <Button
           icon
           circular
-          size="large"
-          color="green"
+          size="huge"
+          color={open ? 'grey' : 'green'}
           onClick={() => setOpen((prev) => !prev)}
         >
-          <Icon inverted size="large" name={open ? 'angle down' : 'angle up'} />
+          <Icon inverted name={open ? 'close' : 'plus'} />
         </Button>
       </div>
       <Tab
@@ -103,18 +110,5 @@ function TextTweaker({ changeHandler, values }) {
     </div>
   );
 }
-
-const colors = [
-  '#FF6900',
-  '#00D084',
-  '#8ED1FC',
-  '#0693E3',
-  '#ABB8C3',
-  '#EB144C',
-  '#F78DA7',
-  '#9900EF',
-  '#FFFFFF',
-  '#000000',
-];
 
 export default TextTweaker;
