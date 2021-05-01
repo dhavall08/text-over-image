@@ -187,12 +187,23 @@ export default function Home() {
                   <Header
                     as="h1"
                     content="Text over Image"
-                    subheader="by Dhaval Laiya"
+                    subheader={
+                      <div className="sub header">
+                        by{' '}
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`https://github.com/dhavall08`}
+                        >
+                          Dhaval Laiya
+                        </a>
+                      </div>
+                    }
                   />
                   <List divided ordered relaxed="very" size="large">
                     <List.Item>
                       <List.Content>
-                        <List.Header>Search images:</List.Header>
+                        <List.Header>Search photos:</List.Header>
                         <List.Description>
                           <Form
                             className="search-form"
@@ -225,7 +236,7 @@ export default function Home() {
                     <List.Item>
                       <List.Icon name="mouse pointer" verticalAlign="middle" />
                       <List.Content>
-                        <List.Description>Select an image.</List.Description>
+                        <List.Description>Select a photo.</List.Description>
                       </List.Content>
                     </List.Item>
                     <List.Item>
