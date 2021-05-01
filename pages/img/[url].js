@@ -57,7 +57,9 @@ function SelectedImage() {
     // to prevent white space, used previous version: 1.0.0-alpha.12 of html2canvas
     setLoading(true);
     finalImage.current &&
-      html2canvas(finalImage.current).then(function (canvas) {
+      html2canvas(finalImage.current, { logging: false }).then(function (
+        canvas
+      ) {
         canvas?.toBlob(function (blob) {
           saveAs(blob, `image-${new Date().toISOString()}.png`);
           setLoading(false);

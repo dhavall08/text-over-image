@@ -1,5 +1,7 @@
 <h4 align="center">
+ <a rel="noopener noreferrer" target="_blank" href="https://text-over-image.netlify.app/">
   <img alt="Text over image" src="./public/og-image.jpg">
+  </a>
 </h4>
 
 ---
