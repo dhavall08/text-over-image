@@ -47,8 +47,14 @@ export default class extends Document {
             property="twitter:description"
             content="Create social media post with your text over any of the large stock photos. Download and share easily."
           />
-          <meta property="og:image" content="/og-image.jpg" />
-          <meta property="twitter:image" content="/og-image.jpg" />
+          <meta
+            property="og:image"
+            content={`${process.env.URL}/og-image.jpg`}
+          />
+          <meta
+            property="twitter:image"
+            content={`${process.env.URL}/og-image.jpg`}
+          />
           <meta name="twitter:card" content="summary_large_image" />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="627" />
