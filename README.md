@@ -1,16 +1,15 @@
 <h4 align="center">
-  <img alt="Text over image" src="/public/og-image.jpg">
+  <img alt="Text over image" src="./public/og-image.jpg">
 </h4>
 
 ---
 
 Search any photos from the large collection of Unsplash and add your text, styles over the photo and download that generated image.
 
-## Libraries
+## Built with
 
 <h5 align="center">
-<span>Semantic UI</span>
-<span>React Query</span>
+<span>Next.js • Semantic UI • React Query • Unsplash</span>
 </h5>
 
 ## Usage
@@ -19,3 +18,9 @@ Search any photos from the large collection of Unsplash and add your text, style
 2. Select a photo.
 3. Write/Generate text with emoji picker.
 4. Download image and share!
+
+## Upcoming features
+
+- Change font-family for the text
+- Adjust text position manually on image
+- Support of other languages
