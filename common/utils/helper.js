@@ -1,4 +1,4 @@
-export const appName = 'your_app_name';
+export const appName = 'text_over_image';
 export const baseTitle = 'Text over Image';
 
 export const PER_PAGE = 12;
