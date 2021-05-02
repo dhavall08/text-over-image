@@ -1,17 +1,4 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import Router from 'next/router';
-
-Router.onRouteChangeComplete = () => {
-  if (window.gtag) {
-    setTimeout(() => {
-      // GA4
-      window.gtag('event', 'page_view', {
-        page_location: window.location.href,
-        page_path: window.location.pathname + location.search,
-      });
-    }, 0);
-  }
-};
 
 export default class extends Document {
   render() {
