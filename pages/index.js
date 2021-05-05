@@ -85,7 +85,11 @@ export default function Home() {
 
     router.push({
       pathname: '/img/[url]',
-      query: { url: selectedImage?.urls?.regular || '', text },
+      query: {
+        url: selectedImage?.urls?.regular || '',
+        text,
+        id: selectedImage?.id,
+      },
     });
   }
 

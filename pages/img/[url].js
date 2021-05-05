@@ -6,6 +6,8 @@ import { Button, Container, Icon, Loader } from 'semantic-ui-react';
 import Head from 'next/head';
 import { getTitle } from '../../common/utils/helper';
 import TextTweaker from '../../common/TextTweaker';
+import { useMutation } from 'react-query';
+import { sendDownloadCount } from '../../apis';
 
 const initStyle = {
   fontSize: 'calc(1.8vw + 1vh)',
@@ -22,7 +24,8 @@ function SelectedImage() {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
-  const { url, text } = router.query;
+  const callDownloadCount = useMutation(sendDownloadCount);
+  const { url, text, id } = router.query;
 
   useEffect(() => {
     const image = new Image();
@@ -53,6 +56,14 @@ function SelectedImage() {
     selectedImage.current = image;
   }, [url]);
 
+  const changeHandler = useCallback((cssProp, cssValue) => {
+    if (cssProp === 'reset') {
+      setTextStyle(initStyle);
+      return;
+    }
+    setTextStyle((prev) => ({ ...prev, [cssProp]: cssValue }));
+  }, []);
+
   function downloadImage() {
     // to prevent white space, used previous version: 1.0.0-alpha.12 of html2canvas
     setLoading(true);
@@ -61,19 +72,20 @@ function SelectedImage() {
         canvas
       ) {
         canvas?.toBlob(function (blob) {
+          trackDownload(); // update unsplash about a download
           saveAs(blob, `image-${new Date().toISOString()}.png`);
           setLoading(false);
         });
       });
   }
 
-  const changeHandler = useCallback((cssProp, cssValue) => {
-    if (cssProp === 'reset') {
-      setTextStyle(initStyle);
+  function trackDownload() {
+    if (!id) {
       return;
     }
-    setTextStyle((prev) => ({ ...prev, [cssProp]: cssValue }));
-  }, []);
+
+    callDownloadCount.mutate(id);
+  }
 
   return (
     <Container>
