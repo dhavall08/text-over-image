@@ -41,6 +41,11 @@ function Photo({ details, clickHandler = () => {} }) {
       <div
         className={`image img ${imageLoaded ? 'img-visible' : 'img-hidden'}`}
       >
+        <div className="img-overlay">
+          <span className="text">
+            <Icon name="plus" size="big" />
+          </span>
+        </div>
         <img src={urls.small} onLoad={() => setImageLoaded(true)} />
       </div>
       <Card.Content extra textAlign="left">

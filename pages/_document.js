@@ -1,5 +1,8 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 
+const metaDesc =
+  'Create social media post with your text over any of the large stock photos. Download and share easily. Create morning WhatsApp status, birthday status, motivational facebook images and lot more.';
+
 export default class extends Document {
   render() {
     return (
@@ -20,20 +23,14 @@ export default class extends Document {
           `,
             }}
           />
-          <meta property="og:title" content="Text over image" />
-          <meta property="twitter:title" content="Text over image" />
+          <meta property="og:title" content="Text over image by Dhaval Laiya" />
           <meta
-            name="description"
-            content="Create social media post with your text over any of the large stock photos. Download and share easily."
+            property="twitter:title"
+            content="Text over image by Dhaval Laiya"
           />
-          <meta
-            property="og:description"
-            content="Create social media post with your text over any of the large stock photos. Download and share easily."
-          />
-          <meta
-            property="twitter:description"
-            content="Create social media post with your text over any of the large stock photos. Download and share easily."
-          />
+          <meta name="description" content={metaDesc} />
+          <meta property="og:description" content={metaDesc} />
+          <meta property="twitter:description" content={metaDesc} />
           <meta
             property="og:image"
             content={`${process.env.URL}/og-image.jpg`}

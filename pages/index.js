@@ -13,22 +13,39 @@ import {
   Pagination,
   Segment,
 } from 'semantic-ui-react';
+import { useQuery } from 'react-query';
 
 import EmojiPicker from '../common/EmojiPicker';
 import Photo from '../common/Photo';
-import { appName, baseTitle, PER_PAGE } from '../common/utils/helper';
+import {
+  appName,
+  baseTitle,
+  insertAtCursor,
+  PER_PAGE,
+} from '../common/utils/helper';
+import InfoTip from '../common/InfoTip';
+
 import { fetchImages } from '../apis';
-import { useQuery } from 'react-query';
 import quotes from '../constants/inspirations.json';
 
 export default function Home() {
   const router = useRouter();
   const inputRef = useRef();
+  const rightPart = useRef();
+
   const { q, page = 1, perPage = PER_PAGE } = router.query;
+
   const [search, setSearch] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // textarea
   const [text, setText] = useState('');
-  const [open, setOpen] = useState(false);
+  const [lastPosition, setLastPosition] = useState(0);
+  const textareaRef = useRef();
+
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const { data, isLoading, isFetching } = useQuery(
     ['images', { q, page, perPage }], // refetch on changes of variable
     () => fetchImages(q, page, perPage),
@@ -39,7 +56,6 @@ export default function Home() {
       refetchOnWindowFocus: false,
     }
   );
-  const rightPart = useRef();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -83,6 +99,8 @@ export default function Home() {
       return;
     }
 
+    setLoading(true);
+
     router.push({
       pathname: '/img/[url]',
       query: {
@@ -94,7 +112,16 @@ export default function Home() {
   }
 
   function selectEmoji(emoji) {
-    setText((prev) => `${prev}${emoji.native}`);
+    const currentRef = textareaRef.current;
+    const cursorZero =
+      currentRef.selectionStart === 0 && currentRef.selectionEnd === 0;
+    const { newStrValue, newPosition } = insertAtCursor(
+      currentRef,
+      emoji.native,
+      cursorZero ? lastPosition : undefined
+    );
+    setText(newStrValue);
+    setLastPosition(newPosition);
   }
 
   function imageSelectionHandler(value) {
@@ -107,6 +134,7 @@ export default function Home() {
     const text = quotes[random].text;
     const author = quotes[random].author;
     setText(author ? `${text} \n— ${author}` : text);
+    setLastPosition(`${text} \n— ${author}`.length);
   }
 
   let selectedImageView = null;
@@ -124,6 +152,9 @@ export default function Home() {
             />
           </Segment>
           <Segment>
+            <InfoTip colorClass="bg-lightyellow">
+              Next, enter the text below and submit.
+            </InfoTip>
             <Form.Field>
               <label>Enter the text to add over image:</label>
               <textarea
@@ -131,11 +162,14 @@ export default function Home() {
                 required
                 placeholder="Your text..."
                 rows={4}
+                ref={textareaRef}
                 value={text}
+                onClick={(e) => setLastPosition(e.target.selectionStart)}
                 onChange={(e) => setText(e.target.value)}
               />
             </Form.Field>
             <Form.Field>
+              <p>Generate any random quotes or add emoji:</p>
               <Button
                 basic
                 labelPosition="left"
@@ -149,14 +183,14 @@ export default function Home() {
                 basic
                 labelPosition="left"
                 color="purple"
-                content={open ? 'Close Emoji' : 'Add Emoji'}
-                icon={open ? 'close' : 'plus'}
+                content={emojiOpen ? 'Close Emoji' : 'Add Emoji'}
+                icon={emojiOpen ? 'close' : 'plus'}
                 type="button"
-                onClick={() => setOpen((prev) => !prev)}
+                onClick={() => setEmojiOpen((prev) => !prev)}
               />
             </Form.Field>
             <Form.Field>
-              <EmojiPicker open={open} selectEmoji={selectEmoji} />
+              <EmojiPicker open={emojiOpen} selectEmoji={selectEmoji} />
             </Form.Field>
             <Form.Field>
               <label>Selected image:</label>
@@ -166,7 +200,7 @@ export default function Home() {
             </Form.Field>
           </Segment>
           <Segment textAlign="right">
-            <Button type="submit" primary size="massive">
+            <Button type="submit" primary size="massive" loading={loading}>
               Generate Image
             </Button>
           </Segment>
@@ -190,7 +224,8 @@ export default function Home() {
                 <div className="left-part">
                   <Header
                     as="h1"
-                    content="Text over Image"
+                    textAlign="center"
+                    content={<a href="/">Text over Image</a>}
                     subheader={
                       <div className="sub header">
                         by{' '}
@@ -204,7 +239,7 @@ export default function Home() {
                       </div>
                     }
                   />
-                  <List divided ordered relaxed="very" size="large">
+                  <List divided relaxed="very" size="large">
                     <List.Item>
                       <List.Content>
                         <List.Header>Search photos:</List.Header>
@@ -266,28 +301,51 @@ export default function Home() {
                     <Segment.Group>
                       <Segment loading={isLoading || isFetching} padded="very">
                         <span ref={rightPart} />
-                        {data?.results?.length > 0 && (
-                          <p>
-                            Showing {(page - 1) * perPage + 1} to{' '}
-                            {page * perPage > data.total
-                              ? data.total
-                              : page * perPage}{' '}
-                            images out of {data.total}
-                          </p>
+                        {data?.results?.length > 0 ? (
+                          <>
+                            <InfoTip colorClass="bg-lightblue">
+                              Now, select a photo by clicking on it.
+                            </InfoTip>
+                            <p>
+                              Showing {(page - 1) * perPage + 1} to{' '}
+                              {page * perPage > data.total
+                                ? data.total
+                                : page * perPage}{' '}
+                              images out of {data.total}
+                            </p>
+                            <Card.Group itemsPerRow={4} stackable>
+                              {data?.results?.map((item) => (
+                                <Photo
+                                  key={item.id}
+                                  details={item}
+                                  clickHandler={imageSelectionHandler}
+                                />
+                              ))}
+                            </Card.Group>
+                          </>
+                        ) : (
+                          <div>
+                            {q ? (
+                              <p>No results. Try something else.</p>
+                            ) : (
+                              <InfoTip colorClass="bg-lightgreen">
+                                Search from the top/left panel and choose one of
+                                the{' '}
+                                <p className="text-black">
+                                  2 million photos of{' '}
+                                  <a
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href={`https://unsplash.com/?utm_source=${appName}&utm_medium=referral`}
+                                  >
+                                    Unsplash
+                                  </a>
+                                  .
+                                </p>
+                              </InfoTip>
+                            )}
+                          </div>
                         )}
-                        <Card.Group itemsPerRow={4} stackable>
-                          {data?.results?.length >= 1 ? (
-                            data?.results?.map((item) => (
-                              <Photo
-                                key={item.id}
-                                details={item}
-                                clickHandler={imageSelectionHandler}
-                              />
-                            ))
-                          ) : (
-                            <p>{q ? 'No results.' : 'Search something!'}</p>
-                          )}
-                        </Card.Group>
                       </Segment>
                       {data?.results?.length < data?.total && (
                         <Segment textAlign="right">

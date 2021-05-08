@@ -1,9 +1,7 @@
-html,
-body {
+html, body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 a {
@@ -15,6 +13,25 @@ a {
   box-sizing: border-box;
 }
 
+.text-black {
+  color: black;
+}
+
+.bg-lightgreen {
+  background-color: #bfffbf;
+  color: green;
+}
+
+.bg-lightblue {
+  background-color: #d7efff;
+  color: #005781;
+}
+
+.bg-lightyellow {
+  background-color: #f2ffca;
+  color: #4f5000;
+}
+
 /* Homepage */
 
 .container-app {
@@ -24,7 +41,7 @@ a {
   flex-direction: column;
 }
 
-.container-app > .main {
+.container-app>.main {
   flex-grow: 1;
 }
 
@@ -66,6 +83,20 @@ a {
   width: 100%;
 }
 
+.instruction {
+  display: flex;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 500;
+  font-size: 16px;
+  border-radius: 6px;
+}
+
+.instruction .icon {
+  padding-right: 1.5rem;
+}
+
 .footer {
   width: 100%;
   height: 2.5rem;
@@ -97,6 +128,30 @@ a {
 .img-visible {
   opacity: 1;
   max-height: 1000px;
+  position: relative;
+}
+
+.img-visible .img-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background-color: #0000005e;
+  pointer-events: none;
+  transition-duration: 0.2s;
+}
+
+.img-visible .img-overlay .text {
+  color: white;
+}
+
+.img-visible:hover .img-overlay {
+  opacity: 1;
 }
 
 .img-hidden {
@@ -114,8 +169,7 @@ a {
   cursor: pointer;
 }
 
-.link:hover,
-.link:focus {
+.link:hover, .link:focus {
   text-decoration: underline;
 }
 

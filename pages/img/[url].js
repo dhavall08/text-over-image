@@ -95,7 +95,7 @@ function SelectedImage() {
       <div className="download-btn">
         <Button
           labelPosition="left"
-          content="Back"
+          content="Back to home"
           icon="left arrow"
           onClick={() => router.back()}
         />
