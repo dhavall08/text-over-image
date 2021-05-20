@@ -42,6 +42,7 @@ export default class extends Document {
           <meta name="twitter:card" content="summary_large_image" />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="627" />
+          <link rel="icon" href="/favicon.ico" />
         </Head>
         <body>
           <Main />

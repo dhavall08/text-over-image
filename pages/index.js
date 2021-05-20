@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 import {
   Button,
@@ -153,7 +154,8 @@ export default function Home() {
           </Segment>
           <Segment>
             <InfoTip colorClass="bg-lightyellow">
-              Next, enter the text below and submit.
+              Next, enter the text below and submit. (try &quot;Inspirational
+              Quote&quot; button)
             </InfoTip>
             <Form.Field>
               <label>Enter the text to add over image:</label>
@@ -213,7 +215,6 @@ export default function Home() {
     <div className="container-app">
       <Head>
         <title>{baseTitle}</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className="main">
@@ -361,6 +362,19 @@ export default function Home() {
                               searchQuery(undefined, data.activePage);
                             }}
                           />
+                        </Segment>
+                      )}
+                      {!(isLoading || isFetching) && (
+                        <Segment>
+                          <p>
+                            Feel free to send me your comments, suggestions,
+                            feature request or bug reports.
+                          </p>
+                          <Link href="/feedback">
+                            <a target="_blank" className="ui grey button">
+                              Send Feedback
+                            </a>
+                          </Link>
                         </Segment>
                       )}
                     </Segment.Group>

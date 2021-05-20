@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { saveAs } from 'file-saver';
@@ -8,6 +9,8 @@ import { getTitle } from '../../common/utils/helper';
 import TextTweaker from '../../common/TextTweaker';
 import { useMutation } from 'react-query';
 import { sendDownloadCount } from '../../apis';
+
+const metaDesc = 'Hey, click to see what I\'ve created using "Text over Image"';
 
 const initStyle = {
   fontSize: 'calc(1.8vw + 1vh)',
@@ -91,6 +94,11 @@ function SelectedImage() {
     <Container>
       <Head>
         <title>{getTitle('Generate Image')}</title>
+        <meta property="og:title" content={getTitle('Generate Image')} />
+        <meta property="og:title" content={getTitle('Generate Image')} />
+        <meta name="description" content={metaDesc} />
+        <meta property="og:description" content={metaDesc} />
+        <meta property="twitter:description" content={metaDesc} />
       </Head>
       <div className="download-btn">
         <Button
@@ -99,6 +107,11 @@ function SelectedImage() {
           icon="left arrow"
           onClick={() => router.back()}
         />
+        <Link href="/feedback">
+          <a target="_blank" className="ui grey button">
+            Send Feedback
+          </a>
+        </Link>
         <Button
           size="huge"
           positive
