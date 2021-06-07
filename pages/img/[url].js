@@ -134,7 +134,7 @@ function SelectedImage() {
         </p>
       )}
       <div ref={finalImage} className="render-img">
-        <p className="render-text" style={textStyle}>
+        <p className="render-text" contenteditable="true" style={textStyle}>
           {text}
         </p>
         <canvas ref={imgCanvas} className="canvas-image" />
