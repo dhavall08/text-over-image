@@ -23,6 +23,7 @@ function SelectedImage() {
   const finalImage = useRef();
   const selectedImage = useRef();
   const imgCanvas = useRef();
+  const renderText = useRef();
   const [textStyle, setTextStyle] = useState(initStyle);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -45,6 +46,9 @@ function SelectedImage() {
         context.drawImage(image, 0, 0);
         setError(false);
         setLoaded(true);
+        
+        const textFtSize = parseInt(getComputedStyle(renderText.current).fontSize.replace("px", ""));
+        setTextStyle((prev) => ({ ...prev, fontSize: textFtSize }));
       },
       false
     );
@@ -134,7 +138,7 @@ function SelectedImage() {
         </p>
       )}
       <div ref={finalImage} className="render-img">
-        <p className="render-text" contentEditable="true" style={textStyle}>
+        <p className="render-text" contentEditable="true" style={textStyle} ref={renderText}>
           {text}
         </p>
         <canvas ref={imgCanvas} className="canvas-image" />
