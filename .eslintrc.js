@@ -26,6 +26,12 @@ module.exports = {
     'react/prop-types': 0,
     'react-hooks/rules-of-hooks': 'warn',
     'react-hooks/exhaustive-deps': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
   settings: {
     react: {
